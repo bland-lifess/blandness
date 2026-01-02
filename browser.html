@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Locked Browser</title>
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #121212; font-family: sans-serif; }
+        #nav { height: 55px; background: #1a1a1a; display: flex; align-items: center; padding: 0 15px; gap: 10px; border-bottom: 1px solid #333; }
+        #address-bar { flex-grow: 1; padding: 10px 15px; border-radius: 20px; border: none; background: #333; color: white; outline: none; font-size: 14px; }
+        iframe { width: 100%; height: calc(100% - 55px); border: none; background: white; }
+        button { background: #4f46e5; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="nav">
+        <input type="text" id="address-bar" placeholder="Enter URL (e.g., google.com) or search term...">
+        <button onclick="launch()">Go</button>
+    </div>
+    <iframe id="browser-frame" src="index.html"></iframe>
+
+    <script>
+        function launch() {
+            const input = document.getElementById('address-bar').value;
+            const frame = document.getElementById('browser-frame');
+            
+            // Logic: Search Google if it's not a URL
+            let target = input;
+            if (!input.includes('.') || input.includes(' ')) {
+                target = "https://www.google.com/search?q=" + encodeURIComponent(input);
+            } else if (!input.startsWith('http')) {
+                target = "https://" + input;
+            }
+
+            // This tells the 'index.html' inside the frame to load the site
+            // UV-Static uses a search.html or direct service worker call
+            frame.src = "search.html?url=" + encodeURIComponent(target);
+        }
+    </script>
+</body>
+</html>
