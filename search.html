@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loading...</title>
+    <script src="uv/uv.bundle.js"></script>
+    <script src="uv/uv.config.js"></script>
+    <script>
+        window.addEventListener('load', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const targetUrl = urlParams.get('url');
+
+            if (targetUrl) {
+                // Register the service worker
+                await registerSW();
+                
+                // Redirect to the proxied URL
+                // The encodeUrl function comes from uv.config.js
+                window.location.href = __uv$config.prefix + __uv$config.encodeUrl(targetUrl);
+            } else {
+                document.body.innerHTML = "No URL provided.";
+            }
+        });
+
+        async function registerSW() {
+            if ('serviceWorker' in navigator) {
+                await navigator.serviceWorker.register('./sw.js', {
+                    scope: __uv$config.prefix
+                });
+            }
+        }
+    </script>
+</head>
+<body>
+    <div style="color: white; text-align: center; margin-top: 20%; font-family: sans-serif;">
+        <h1>Connecting to Proxy...</h1>
+        <p>Please wait a moment.</p>
+    </div>
+</body>
+</html>
